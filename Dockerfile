@@ -2,6 +2,8 @@ FROM debian:jessie
 MAINTAINER Pirmin Tapken <ookami.gnu@gmail.com>
 RUN apt-get update && apt-get dist-upgrade -y
 
+RUN apt-get install wget -y
+
 # Add Tini
 ENV TINI_VERSION v0.5.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
@@ -21,5 +23,11 @@ RUN adduser \
         --gecos "" \
         user
 RUN mkdir -p /home/user
+RUN chown user:user /home/user
 VOLUME /home/user
+COPY setup.sh /usr/local/bin/setup.sh
+RUN chmod +x /usr/local/bin/setup.sh
+
+# Install debugging stuff
+RUN apt-get install tmux strace vim -y
 USER user
